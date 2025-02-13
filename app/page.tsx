@@ -1,11 +1,33 @@
 'use client';
 import { useEffect, useState } from 'react';
 
+// Определяем глобальный объект Telegram в TypeScript
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp: {
+        expand: () => void;
+        initDataUnsafe: {
+          user?: {
+            first_name: string;
+            username?: string;
+          };
+        };
+      };
+    };
+  }
+}
+
+interface User {
+  first_name: string;
+  username?: string;
+}
+
 export default function Home() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.Telegram?.WebApp) {
+    if (typeof window !== 'undefined' && window?.Telegram?.WebApp) {
       const tg = window.Telegram.WebApp;
       tg.expand(); // Разворачивает WebView
       console.log('Telegram WebApp initialized', tg.initDataUnsafe);
